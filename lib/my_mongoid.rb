@@ -1,10 +1,12 @@
 require "my_mongoid/version"
+require 'my_mongoid/field'
 require 'active_support/concern'
 
 module MyMongoid
 
 	module Document
 		extend ActiveSupport::Concern
+		include Field
 
 		@@models = []
 
@@ -46,11 +48,7 @@ module MyMongoid
 			def is_mongoid_model?
 				true
 			end
-
-			def field
-
-			end
 		end
-	end
 
+	end
 end

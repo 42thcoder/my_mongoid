@@ -23,6 +23,10 @@ module MyMongoid
 				def write_attribute(key, value)
 					@attributes[key] = value
 				end
+
+				def new_record?
+					true
+				end
 			end
 		end
 

@@ -40,6 +40,7 @@ module MyMongoid
 				@fields[named] = field
 
 				alias_method "#{options[:as]}=", "#{named}=" if options[:as]
+				alias_method options[:as], named if options[:as]
 
 				def fields
 					@fields

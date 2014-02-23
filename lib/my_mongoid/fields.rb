@@ -39,13 +39,7 @@ module MyMongoid
 				field = Field.new(named, options)
 				@fields[named] = field
 
-				options.each_pair do |key, value|
-					case key.to_s
-					when 'as'
-						
-
-					end
-				end
+				alias_method "#{options[:as]}=", "#{named}=" if options[:as]
 
 				def fields
 					@fields

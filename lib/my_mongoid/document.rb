@@ -22,7 +22,7 @@ module MyMongoid
 			@attributes ||= {}
 			# todo @attributes = attributes 会导致错误
 			# adding new key in interation
-
+			
 			process_attributes(attributes)
 		end
 

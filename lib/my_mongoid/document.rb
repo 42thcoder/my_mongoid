@@ -1,4 +1,4 @@
-require "my_mongoid/field"
+require "my_mongoid/fields"
 require "my_mongoid/attributes"
 require 'active_support/concern'
 

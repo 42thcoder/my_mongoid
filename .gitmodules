@@ -1,0 +1,3 @@
+[submodule "my_mongoid_spec"]
+	path = my_mongoid_spec
+	url = https://github.com/hayeah/my_mongoid_spec

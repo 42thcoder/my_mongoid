@@ -36,6 +36,9 @@ module MyMongoid
       # adding new key in interation
 
       process_attributes(attributes)
+      unless attributes.key?('id') or attributes.key?('_id')
+        self._id = BSON::ObjectId.new
+      end
     end
 
     module ClassMethods

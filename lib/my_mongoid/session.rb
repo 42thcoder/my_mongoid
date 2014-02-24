@@ -18,7 +18,9 @@ module MyMongoid
     end
 
     def create(attrs)
-      self.new(attrs)
+      instance = self.new(attrs)
+      instance.save
+      instance
     end
   end
 end

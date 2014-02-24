@@ -7,11 +7,7 @@ def config_db
   end
 end
 
-def clean_db
-  Event.collection.drop
-end
-
-class Event
+class AnotherEvent
   include MyMongoid::Document
   field :a
   field :b
@@ -91,19 +87,19 @@ end
 
 describe "Should be able to create a record:" do
   before(:all) { config_db }
-  before { clean_db }
+  before { AnotherEvent.collection.drop }
 
   describe "model collection:" do
     describe "Model.collection_name" do
       it "should use active support's titleize method" do
-        expect(Event.collection_name).to eq("events")
+        expect(AnotherEvent.collection_name).to eq("another_events")
       end
     end
 
     describe "Model.collection" do
       it "should return a model's collection" do
-        expect(Event.collection).to be_a(Moped::Collection)
-        expect(Event.collection.name).to eq("events")
+        expect(AnotherEvent.collection).to be_a(Moped::Collection)
+        expect(AnotherEvent.collection.name).to eq("another_events")
       end
     end
   end
@@ -112,7 +108,7 @@ describe "Should be able to create a record:" do
   describe "#to_document" do
 
     let(:event) {
-      Event.new({"a" => 10, "b" => 20})
+      AnotherEvent.new({"a" => 10, "b" => 20})
     }
 
     it "should be a bson document" do
@@ -127,7 +123,7 @@ describe "Should be able to create a record:" do
     }
 
     let(:event) {
-      Event.new(attrs)
+      AnotherEvent.new(attrs)
     }
 
     context "successful insert:" do
@@ -136,7 +132,7 @@ describe "Should be able to create a record:" do
       end
 
       it "should insert a new record into the db" do
-        expect(Event.collection.find().count).to eq(1)
+        expect(AnotherEvent.collection.find().count).to eq(1)
       end
 
       it "should return true" do
@@ -155,7 +151,7 @@ describe "Should be able to create a record:" do
     }
 
     def create_event
-      Event.create(attrs)
+      AnotherEvent.create(attrs)
     end
 
     before do
@@ -163,7 +159,7 @@ describe "Should be able to create a record:" do
     end
 
     it "should return a saved record" do
-      expect(@event).to be_an(Event)
+      expect(@event).to be_an(AnotherEvent)
       expect(@event).to_not be_new_record
       expect(@event.attributes).to eq(attrs)
     end
@@ -171,7 +167,7 @@ describe "Should be able to create a record:" do
 
   context "saving a record with no id" do
     let(:event) {
-      Event.new({"a" => 10})
+      AnotherEvent.new({"a" => 10})
     }
 
     before do
@@ -180,7 +176,7 @@ describe "Should be able to create a record:" do
 
     it "should generate a random id" do
       expect(event.id).to be_a(BSON::ObjectId)
-      expect(Event.collection.find({"_id" => event.id}).count).to eq(1)
+      expect(AnotherEvent.collection.find({"_id" => event.id}).count).to eq(1)
     end
   end
 end
@@ -193,12 +189,12 @@ describe "Should be able to find a record:" do
   # }
 
   # before do
-  #   Event.collection.drop
-  #   Event.create(attrs)
+  #   AnotherEvent.collection.drop
+  #   AnotherEvent.create(attrs)
   # end
 
   # let(:event) {
-  #   event = Event.find({"_id" => "1"})
+  #   event = AnotherEvent.find({"_id" => "1"})
   # }
 
   describe "Model.instantiate" do
@@ -245,25 +241,25 @@ describe "Should be able to find a record:" do
     }
 
     before {
-      clean_db
-      Event.create(attrs)
+      AnotherEvent.collection.drop
+      AnotherEvent.create(attrs)
     }
 
     it "should be able to find a record by issuing query" do
-      event = Event.find("_id" => "1")
-      expect(event).to be_a(Event)
+      event = AnotherEvent.find("_id" => "1")
+      expect(event).to be_a(AnotherEvent)
       expect(event.attributes).to eq(attrs)
     end
 
     it "should be able to find a record by issuing shorthand id query" do
-      event = Event.find("1")
-      expect(event).to be_a(Event)
+      event = AnotherEvent.find("1")
+      expect(event).to be_a(AnotherEvent)
       expect(event.attributes).to eq(attrs)
     end
 
     it "should raise Mongoid::RecordNotFoundError if nothing is found for an id" do
       expect {
-        Event.find("_id" => "unknown")
+        AnotherEvent.find("_id" => "unknown")
       }.to raise_error(MyMongoid::RecordNotFoundError)
     end
 

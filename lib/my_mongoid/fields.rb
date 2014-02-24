@@ -39,8 +39,11 @@ module MyMongoid
         field = Field.new(named, options)
         @fields[named] = field
 
-        alias_method "#{options[:as]}=", "#{named}=" if options[:as]
-        alias_method options[:as], named if options[:as]
+        if options[:as]
+          alias_method "#{options[:as]}=", "#{named}="
+          alias_method options[:as], named
+          @fields[options[:as].to_s] = field
+        end
 
         def fields
           @fields

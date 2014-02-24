@@ -4,6 +4,8 @@ require "spec_helper"
 
 class Event
   include MyMongoid::Document
+  field :public
+  field :id
 end
 
 describe "Document modules:" do

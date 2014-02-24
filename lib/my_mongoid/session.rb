@@ -22,5 +22,24 @@ module MyMongoid
       instance.save
       instance
     end
+
+    def instantiate(attrs)
+      instance = self.new({})
+      attrs.each_pair do |k, v|
+        instance.attributes[k] = v
+      end
+      instance.instance_variable_set :@is_new, false
+      instance
+    end
+
+    def find(query)
+      if query.instance_of? String
+        query = { _id: query }
+      end
+      result = self.collection.find(query).one
+      raise RecordNotFoundError unless result
+      instance = self.instantiate(result)
+      instance
+    end
   end
 end

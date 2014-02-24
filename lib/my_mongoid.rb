@@ -1,5 +1,7 @@
 require "my_mongoid/document"
 require "my_mongoid/configuration"
+require "my_mongoid/session"
+require "my_mongoid/errors"
 require 'active_support/concern'
 
 module MyMongoid

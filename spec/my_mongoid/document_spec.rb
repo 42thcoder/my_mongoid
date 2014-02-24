@@ -32,7 +32,7 @@ end
 
 describe "Instantiate a model:" do
   let(:attributes) {
-    {"id" => "123", "public" => true}
+    {"_id" => "123", "public" => true}
   }
 
   let(:event) {
@@ -54,7 +54,7 @@ describe "Instantiate a model:" do
   end
 
   it "can get an attribute with #read_attribute" do
-    expect(event.read_attribute("id")).to eq("123")
+    expect(event.read_attribute("_id")).to eq("123")
   end
 
   it "can set an attribute with #write_attribute" do

@@ -4,7 +4,7 @@ require "active_support/inflector"
 module MyMongoid
   def self.session
     raise UnconfiguredDatabaseError unless MyMongoid.configuration.host && MyMongoid.configuration.database
-    @session ||= Moped::Session.new([ "localhost:27017" ])
+    @session ||= Moped::Session.new([ MyMongoid.configuration.host ])
     @session.use(MyMongoid::configuration.database)
     @session
   end

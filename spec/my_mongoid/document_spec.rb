@@ -119,7 +119,7 @@ describe "Should be able to update a record:" do
 
   before {
     config_db
-    before { AnotherEvent.collection.drop }
+    AnotherEvent.collection.drop
   }
 
   describe "#atomic_updates" do
@@ -146,6 +146,8 @@ describe "Should be able to update a record:" do
   end
 
   describe "updating database:" do
+    before(:all) { config_db }
+    before { AB.collection.drop }
     let(:attrs) {
       {"_id" => "1", "a" => 1, "b" => 2}
     }
@@ -207,7 +209,7 @@ describe "Should be able to delete a record:" do
 
   before {
     config_db
-    clean_db
+    AB.collection.drop
     AB.create(attrs)
   }
 

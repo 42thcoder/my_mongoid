@@ -18,6 +18,14 @@ module MyMongoid
       @is_new
     end
 
+    def changed?
+      self.changed_attributes.keys.size > 0
+    end
+
+    def changed_attributes
+      @changed_attributes ||= {}
+    end
+
     def to_document
       @attributes
     end
@@ -39,6 +47,7 @@ module MyMongoid
       unless attributes.key?('id') or attributes.key?('_id')
         self._id = BSON::ObjectId.new
       end
+      @changed_attributes = {}
     end
 
     module ClassMethods

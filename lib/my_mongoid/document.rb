@@ -55,6 +55,15 @@ module MyMongoid
       true
     end
 
+    def deleted?
+      @deleted ||= false
+    end
+
+    def delete
+      self.class.collection.find({"_id" => self._id}).remove
+      @deleted = true
+    end
+
     def update_document
       self.save
     end

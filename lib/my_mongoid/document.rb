@@ -18,14 +18,59 @@ module MyMongoid
       @is_new
     end
 
+    def changed?
+      self.changed_attributes.keys.size > 0
+    end
+
+    def changed_attributes
+      @changed_attributes ||= {}
+    end
+
+    def atomic_updates
+      if !self.new_record? && self.changed?
+        set = {}
+        set["$set"] = {}
+        self.changed_attributes.each_pair do |k, v|
+          set["$set"][k] = self.read_attribute(k)
+        end
+        set
+      else
+        {}
+      end
+    end
+
     def to_document
       @attributes
     end
 
     def save
-      self.class.collection.insert(self.to_document)
-      @is_new = false
+      return true unless self.changed?
+      if @is_new
+        self.class.collection.insert(self.to_document)
+        @is_new = false
+      else
+        self.class.collection.find({"_id" => self._id}).update(self.atomic_updates)
+      end
+      @changed_attributes = {}
       true
+    end
+
+    def deleted?
+      @deleted ||= false
+    end
+
+    def delete
+      self.class.collection.find({"_id" => self._id}).remove
+      @deleted = true
+    end
+
+    def update_document
+      self.save
+    end
+
+    def update_attributes(attributes)
+      process_attributes(attributes)
+      self.update_document
     end
 
     def initialize(attributes)
@@ -35,10 +80,11 @@ module MyMongoid
       # todo @attributes = attributes 会导致错误
       # adding new key in interation
 
-      process_attributes(attributes)
       unless attributes.key?('id') or attributes.key?('_id')
         self._id = BSON::ObjectId.new
       end
+      @changed_attributes = {}
+      process_attributes(attributes)
     end
 
     module ClassMethods

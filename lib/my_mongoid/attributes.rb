@@ -20,6 +20,8 @@ module MyMongoid
     end
 
     def write_attribute(key, value)
+      return value if value == @attributes[key]
+      self.changed_attributes[key] = @attributes[key]
       @attributes[key] = value
     end
 

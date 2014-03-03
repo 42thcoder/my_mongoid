@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem "actionpack", "~> 4.0"
+#gem "actionpack", "~> 4.0"
 
 group :test do
   gem "rspec", "~> 3.0.0.beta1"

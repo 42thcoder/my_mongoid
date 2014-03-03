@@ -1,7 +1,5 @@
 require "spec_helper"
 
-# todo
-
 class Event
   include MyMongoid::Document
   field :public

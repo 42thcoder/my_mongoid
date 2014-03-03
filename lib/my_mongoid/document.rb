@@ -77,8 +77,6 @@ module MyMongoid
       raise ArgumentError, 'It is not a hash' unless attributes.is_a?(Hash)
       @is_new = true
       @attributes ||= {}
-      # todo @attributes = attributes 会导致错误
-      # adding new key in interation
 
       unless attributes.key?('id') or attributes.key?('_id')
         self._id = BSON::ObjectId.new

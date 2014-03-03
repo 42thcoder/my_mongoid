@@ -11,7 +11,6 @@ module MyMongoid
   end
 
   def self.register_model(klass)
-    # why self todo
     @models << klass unless models.include?(klass)
   end
 

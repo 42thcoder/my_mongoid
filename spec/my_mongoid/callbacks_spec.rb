@@ -46,6 +46,27 @@ describe MyMongoid::MyCallbacks do
       expect(target).to receive(:before_save)
       cb.invoke(target)
     end
+
+    # FOR BONUS :)
+    # Reference: Callback#make_lambda(filter)
+
+    # String: some content to evaluate
+    # Object: An object with before_save method on it to call
+    # Proc: A proc to call with the object
+    context "extend #invoke to support String, Proc and Object as filter" do
+      let(:cb) {
+        MyMongoid::MyCallbacks::Callback.new("before_save", :before)
+      }
+
+      it "should support String" do
+        expect(target).to receive(:before_save)
+        cb.invoke(target)
+      end
+
+      it "should support Proc" do
+      end
+    end
+
   end
 
   describe "MyMongoid::MyCallbacks::CallbackChain" do

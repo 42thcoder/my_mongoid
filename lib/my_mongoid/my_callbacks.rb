@@ -28,10 +28,11 @@ module MyMongoid
 
     # fancy Array, store all callbacks for one spec
     class CallbackChain
-      attr_accessor :chain
+      attr_accessor :chain, :before_callbacks, :around_callbacks, :after_callbacks
 
       def initialize
         @chain = []
+        @before_callbacks = @around_callbacks = @after_callbacks = []
       end
 
       def empty?
@@ -42,11 +43,27 @@ module MyMongoid
         @chain.push callback
       end
 
-      def invoke(target)
-        @chain.each do |callback|
-          callback.invoke(target)
+      def invoke(target, &block)
+        _invoke(0, target, &block)
+      end
+
+      protected
+
+      def _invoke(i, target, &block)
+        if i >= @chain.length
+          block.call
+        else
+          # TODO: dirty?
+          @chain[i].invoke(target) if @chain[i].kind == :before
+          if @chain[i].kind == :around
+            @chain[i].invoke(target) do
+              _invoke(i+1, target, &block)
+            end
+          else
+            _invoke(i+1, target, &block)
+          end
+          @chain[i].invoke(target) if @chain[i].kind == :after
         end
-        yield
       end
     end
 
@@ -60,8 +77,9 @@ module MyMongoid
         @kind = kind
       end
 
-      def invoke(target)
-        target.send(filter)
+      def invoke(target, &block)
+        # TODO: String, Proc & Object Supporting
+        target.send(filter, &block)
       end
     end
 

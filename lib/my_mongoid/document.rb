@@ -1,7 +1,9 @@
 require "my_mongoid/fields"
 require "my_mongoid/session"
 require "my_mongoid/attributes"
+require "my_mongoid/callbacks"
 require 'active_support/concern'
+require 'active_model'
 
 module MyMongoid
 
@@ -9,6 +11,7 @@ module MyMongoid
     extend ActiveSupport::Concern
     include Fields
     include Attributes
+    include Callbacks
 
     included do
       MyMongoid.register_model(self)
@@ -44,15 +47,17 @@ module MyMongoid
     end
 
     def save
-      return true unless self.changed?
-      if @is_new
-        self.class.collection.insert(self.to_document)
-        @is_new = false
-      else
-        self.class.collection.find({"_id" => self._id}).update(self.atomic_updates)
+      run_callbacks(:save) do
+        return true unless self.changed?
+        if @is_new
+          self.class.collection.insert(self.to_document)
+          @is_new = false
+        else
+          self.class.collection.find({"_id" => self._id}).update(self.atomic_updates)
+        end
+        @changed_attributes = {}
+        true
       end
-      @changed_attributes = {}
-      true
     end
 
     def deleted?
@@ -77,8 +82,6 @@ module MyMongoid
       raise ArgumentError, 'It is not a hash' unless attributes.is_a?(Hash)
       @is_new = true
       @attributes ||= {}
-      # todo @attributes = attributes 会导致错误
-      # adding new key in interation
 
       unless attributes.key?('id') or attributes.key?('_id')
         self._id = BSON::ObjectId.new
